@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OS TECH HUB — Smart Tech, Simple Ordering</title>
+<meta name="description" content="OS TECH HUB — smart tech gadgets, ordered directly over WhatsApp or Instagram.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B0E14;
+    --surface:#12161F;
+    --surface-2:#191F2C;
+    --border:#262D3D;
+    --text:#E8EAF0;
+    --text-muted:#8A92A6;
+    --amber:#FF8A3D;
+    --amber-deep:#1A1300;
+    --blue:#4FA8FF;
+    --whatsapp:#25D366;
+    --radius:14px;
+    --maxw:1200px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    position:relative;
+  }
+  body::before{
+    content:'';
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    background:
+      radial-gradient(640px circle at 12% 8%, rgba(255,138,61,0.14), transparent 60%),
+      radial-gradient(720px circle at 88% 22%, rgba(79,168,255,0.12), transparent 60%),
+      radial-gradient(820px circle at 50% 95%, rgba(255,138,61,0.07), transparent 60%),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 48px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 48px),
+      var(--bg);
+  }
+  h1,h2,h3,.display{font-family:'Space Grotesk',sans-serif;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  a{color:inherit;text-decoration:none;}
+  img{display:block;max-width:100%;}
+  button{font-family:inherit;}
+  :focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
+
+  /* ---------- HEADER ---------- */
+  header{
+    position:sticky;top:0;z-index:100;
+    background:rgba(11,14,20,.85);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .header-inner{
+    max-width:var(--maxw);margin:0 auto;padding:16px 24px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .brand{font-size:1.15rem;font-weight:700;letter-spacing:.5px;background:none;border:none;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:2px;}
+  .brand .cursor{color:var(--amber);}
+  .cart-btn{
+    position:relative;background:var(--surface);border:1px solid var(--border);
+    width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;color:var(--text);
+  }
+  .cart-btn:hover{border-color:var(--amber);}
+  .cart-badge{
+    position:absolute;top:-6px;right:-6px;background:var(--amber);color:var(--amber-deep);
+    font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;
+    min-width:18px;height:18px;border-radius:9px;display:none;align-items:center;justify-content:center;padding:0 4px;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:78vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:60px 24px 40px;gap:18px;
+  }
+  .eyebrow{font-family:'JetBrains Mono',monospace;color:var(--blue);font-size:12px;letter-spacing:3px;text-transform:uppercase;}
+  .hero h1{font-size:clamp(2.6rem,9vw,5.4rem);line-height:1.02;margin:0;font-weight:700;}
+  .hero p.tagline{color:var(--text-muted);font-size:1.05rem;max-width:460px;margin:0;}
+  .scroll-cue{
+    margin-top:22px;background:none;border:1px solid var(--border);color:var(--text-muted);
+    width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;
+  }
+  .scroll-cue:hover{border-color:var(--amber);color:var(--amber);}
+  @media (prefers-reduced-motion:no-preference){
+    .scroll-cue svg{animation:bob 1.6s ease-in-out infinite;}
+  }
+  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(4px);}}
+
+  /* ---------- CATALOG ---------- */
+  .section-head{
+    max-width:var(--maxw);margin:0 auto;padding:0 24px;display:flex;align-items:baseline;
+    justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:6px;
+  }
+  .section-head h2{font-size:1.6rem;margin:4px 0 0;}
+  .catalog{max-width:var(--maxw);margin:0 auto;padding:0 24px 80px;}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  @media (max-width:680px){.grid{grid-template-columns:repeat(2,1fr);gap:12px;}}
+
+  .card{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    overflow:hidden;cursor:pointer;text-align:left;color:inherit;display:flex;flex-direction:column;
+    transition:transform .18s ease,border-color .18s ease;
+  }
+  .card:hover{transform:translateY(-4px);border-color:var(--amber);}
+  .card-img-wrap{position:relative;aspect-ratio:1/1;background:var(--surface-2);overflow:hidden;}
+  .card-img-wrap img{width:100%;height:100%;object-fit:cover;}
+  .card-index{
+    position:absolute;top:8px;left:8px;background:rgba(11,14,20,.7);color:var(--amber);
+    font-family:'JetBrains Mono',monospace;font-size:11px;padding:3px 7px;border-radius:6px;letter-spacing:.5px;
+  }
+  .card-discount{
+    position:absolute;top:8px;right:8px;background:rgba(37,211,102,.9);color:#04210f;
+    font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;padding:3px 7px;border-radius:6px;
+  }
+  .card-body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:4px;flex:1;}
+  .card-name{font-size:.92rem;font-weight:600;line-height:1.3;}
+  .card-price-row{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-top:auto;}
+  .card-price{font-family:'JetBrains Mono',monospace;color:var(--amber);font-size:.92rem;}
+  .card-mrp{font-family:'JetBrains Mono',monospace;color:var(--text-muted);font-size:.78rem;text-decoration:line-through;}
+
+  /* ---------- PRODUCT DETAIL ---------- */
+  .detail{max-width:var(--maxw);margin:0 auto;padding:32px 24px 90px;}
+  .back-link{
+    display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--text-muted);
+    font-family:'JetBrains Mono',monospace;font-size:13px;cursor:pointer;margin-bottom:26px;padding:0;
+  }
+  .back-link:hover{color:var(--amber);}
+  .detail-wrap{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;}
+  @media (max-width:800px){.detail-wrap{grid-template-columns:1fr;gap:24px;}}
+  .main-img-wrap{aspect-ratio:1/1;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+  .main-img-wrap img{width:100%;height:100%;object-fit:cover;}
+  .thumbs{display:flex;gap:10px;margin-top:10px;}
+  .thumb{
+    width:74px;height:74px;border-radius:10px;overflow:hidden;border:2px solid var(--border);
+    cursor:pointer;background:var(--surface);padding:0;
+  }
+  .thumb img{width:100%;height:100%;object-fit:cover;}
+  .thumb.active{border-color:var(--amber);}
+
+  .detail-index{font-family:'JetBrains Mono',monospace;color:var(--amber);font-size:13px;letter-spacing:1px;}
+  .detail h1{font-size:2rem;margin:8px 0 4px;line-height:1.1;}
+  .detail-tagline{color:var(--text-muted);font-size:.95rem;margin-bottom:14px;}
+  .price-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:18px;}
+  .detail-price{font-family:'JetBrains Mono',monospace;color:var(--amber);font-size:1.6rem;font-weight:600;}
+  .detail-mrp{font-family:'JetBrains Mono',monospace;color:var(--text-muted);font-size:1.05rem;text-decoration:line-through;}
+  .discount-pill{
+    background:rgba(37,211,102,.15);color:#5be08a;font-family:'JetBrains Mono',monospace;
+    font-size:.78rem;font-weight:600;padding:4px 10px;border-radius:20px;
+  }
+  .detail-desc{color:var(--text-muted);line-height:1.6;margin-bottom:18px;}
+  .features{list-style:none;margin:0 0 26px;padding:0;display:flex;flex-direction:column;gap:8px;}
+  .features li{display:flex;gap:10px;color:var(--text);font-size:.93rem;}
+  .features li::before{content:'>';font-family:'JetBrains Mono',monospace;color:var(--blue);}
+  .divider{border-top:1px solid var(--border);margin:20px 0;}
+
+  .qty-row{display:flex;align-items:center;gap:14px;margin-bottom:22px;}
+  .qty-label{font-size:.85rem;color:var(--text-muted);}
+  .stepper{display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:10px;}
+  .stepper button{width:38px;height:38px;background:none;border:none;color:var(--text);font-size:1.1rem;cursor:pointer;}
+  .stepper button:hover{color:var(--amber);}
+  .stepper span{width:40px;text-align:center;font-family:'JetBrains Mono',monospace;}
+
+  .btn{
+    padding:15px 22px;border-radius:10px;font-weight:600;letter-spacing:.2px;cursor:pointer;
+    border:1px solid transparent;display:flex;align-items:center;justify-content:center;gap:8px;
+    width:100%;font-size:.95rem;
+  }
+  .btn-primary{background:var(--amber);color:var(--amber-deep);margin-bottom:10px;}
+  .btn-primary:hover{background:#ffa05c;}
+  .btn-outline{background:transparent;border-color:var(--border);color:var(--text);}
+  .btn-outline:hover{border-color:var(--amber);color:var(--amber);}
+  .btn-whatsapp{background:var(--whatsapp);color:#04210f;margin-bottom:10px;}
+  .btn-whatsapp:hover{filter:brightness(1.08);}
+  .btn-instagram{background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af,#515bd4);color:#fff;}
+  .btn-instagram:hover{filter:brightness(1.08);}
+
+  .placeholder-warning{
+    background:#2A1A12;border:1px solid #5C3B22;color:#FFB37A;padding:10px 14px;
+    border-radius:10px;font-size:.82rem;margin-bottom:16px;font-family:'JetBrains Mono',monospace;
+  }
+
+  /* ---------- CART ---------- */
+  .cart-overlay{
+    position:fixed;inset:0;background:rgba(5,7,12,.6);opacity:0;pointer-events:none;
+    transition:opacity .25s ease;z-index:998;
+  }
+  .cart-overlay.open{opacity:1;pointer-events:auto;}
+  .cart-panel{
+    position:fixed;top:0;right:0;height:100vh;width:min(420px,92vw);background:var(--surface);
+    border-left:1px solid var(--border);transform:translateX(100%);transition:transform .3s ease;
+    z-index:999;display:flex;flex-direction:column;
+  }
+  .cart-panel.open{transform:translateX(0);}
+  .cart-header{
+    display:flex;align-items:center;justify-content:space-between;padding:18px 20px;
+    border-bottom:1px solid var(--border);
+  }
+  .cart-header h3{margin:0;font-size:1.05rem;}
+  .cart-close{background:none;border:none;color:var(--text-muted);cursor:pointer;padding:4px;}
+  .cart-close:hover{color:var(--amber);}
+  .cart-body{flex:1;overflow-y:auto;padding:14px 20px;}
+  .cart-empty{
+    color:var(--text-muted);text-align:center;padding:60px 10px;font-family:'JetBrains Mono',monospace;font-size:.85rem;
+  }
+  .cart-item{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);}
+  .cart-item img{width:56px;height:56px;border-radius:8px;object-fit:cover;flex-shrink:0;}
+  .cart-item-info{flex:1;min-width:0;}
+  .cart-item-name{font-size:.85rem;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cart-item-price{font-family:'JetBrains Mono',monospace;color:var(--amber);font-size:.8rem;margin-top:2px;}
+  .mini-stepper{display:flex;align-items:center;border:1px solid var(--border);border-radius:8px;}
+  .mini-stepper button{width:26px;height:26px;background:none;border:none;color:var(--text);cursor:pointer;font-size:.95rem;}
+  .mini-stepper span{width:26px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.8rem;}
+  .cart-remove{background:none;border:none;color:var(--text-muted);cursor:pointer;padding:4px;margin-left:4px;}
+  .cart-remove:hover{color:#FF6B6B;}
+  .cart-footer{border-top:1px solid var(--border);padding:18px 20px;background:var(--surface);}
+  .cart-total-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px;}
+  .cart-total-row span:first-child{color:var(--text-muted);font-size:.9rem;}
+  .cart-total-row span:last-child{font-family:'JetBrains Mono',monospace;font-size:1.3rem;color:var(--amber);font-weight:600;}
+  .cart-savings{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:#5be08a;margin-bottom:14px;display:none;}
+
+  /* ---------- TOAST ---------- */
+  .toast{
+    position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);background:var(--surface-2);
+    border:1px solid var(--border);color:var(--text);padding:12px 18px;border-radius:10px;font-size:.85rem;
+    opacity:0;pointer-events:none;transition:all .3s ease;z-index:1100;box-shadow:0 8px 24px rgba(0,0,0,.4);
+    max-width:90vw;text-align:center;
+  }
+  .toast.show{opacity:1;transform:translate(-50%,0);}
+
+  /* ---------- FOOTER ---------- */
+  footer{border-top:1px solid var(--border);padding:34px 24px;text-align:center;}
+  footer .brand-line{font-weight:600;margin-bottom:6px;}
+  footer .contact-row{display:flex;justify-content:center;gap:18px;margin:14px 0;flex-wrap:wrap;}
+  footer .contact-row a{color:var(--text-muted);font-size:.85rem;display:flex;align-items:center;gap:6px;}
+  footer .contact-row a:hover{color:var(--amber);}
+  footer .copyright{color:var(--text-muted);font-size:.78rem;margin-top:10px;}
+
+  [hidden]{display:none !important;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <button class="brand" onclick="navigate('#/')">OS TECH HUB<span class="cursor">_</span></button>
+    <button class="cart-btn" onclick="toggleCart()" aria-label="Open cart">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      <span class="cart-badge" id="cartBadge">0</span>
+    </button>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<footer>
+  <div class="brand-line">OS TECH HUB</div>
+  <div class="contact-row">
+    <a href="https://wa.me/919082810462" target="_blank" rel="noopener">WhatsApp: +91 90828 10462</a>
+    <a href="https://instagram.com/ostechhub.in" target="_blank" rel="noopener">Instagram: @ostechhub.in</a>
+  </div>
+  <div class="copyright">© <span id="year"></span> OS TECH HUB. All products ordered directly via WhatsApp or Instagram.</div>
+</footer>
+
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<aside class="cart-panel" id="cartPanel" aria-label="Shopping cart">
+  <div class="cart-header">
+    <h3>Your Cart</h3>
+    <button class="cart-close" onclick="closeCart()" aria-label="Close cart">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="cart-body" id="cartBody"></div>
+  <div class="cart-footer">
+    <div class="cart-total-row"><span>Total</span><span id="cartTotal">₹0</span></div>
+    <div class="cart-savings" id="cartSavings"></div>
+    <button class="btn btn-whatsapp" onclick="checkoutWhatsapp()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.2-.6.8-.8 1-.1.2-.3.2-.5.1-1.4-.6-2.3-1.5-3-2.6-.1-.2-.1-.4.1-.6l.4-.5c.1-.2.1-.4 0-.6-.1-.2-.6-1.5-.8-1.9-.2-.4-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.2.2 1.8 2.8 4.5 3.8 2.2.9 2.6.7 3.1.6.5 0 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2-.1-.1-.3-.2-.5-.3z"/></svg>
+      Order via WhatsApp
+    </button>
+    <button class="btn btn-instagram" onclick="checkoutInstagram()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+      Order via Instagram
+    </button>
+  </div>
+</aside>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================================
+   STORE SETTINGS — edit here if your contact details ever change
+   ===================================================================== */
+const WHATSAPP_NUMBER   = '919082810462';   // country code + number, no + or spaces
+const INSTAGRAM_USERNAME = 'ostechhub.in';
+
+/* =====================================================================
+   PRODUCTS — edit name / price / tagline / desc / features for any item.
+   Image files must be named p<ID>-1.png, p<ID>-2.png, p<ID>-3.png and
+   placed in the SAME FOLDER as this index.html file.
+   ===================================================================== */
+const PRODUCTS = [
+  {id:1, name:"3D Moon Night Lamp", mrp:1599, price:699, tagline:"Lunar-textured glow for cozy nights",
+   desc:"A hyper-realistic 3D printed moon lamp built from real lunar surface data. Soft, ambient light that doubles as a striking decor piece or a thoughtful gift.",
+   features:["16 colour lighting modes with touch control","USB-C rechargeable, lasts up to 8 hours","Available in 10cm and 15cm sizes"]},
+
+  {id:2, name:"Cloud Rain Humidifier", mrp:3999, price:1399, tagline:"Calming raindrop mist for any room",
+   desc:"Mist falls drop by drop from a 'cloud' onto water below, recreating the look and sound of gentle rain while quietly humidifying your space.",
+   features:["300ml tank, up to 6 hrs continuous mist","Soft amber night-light","Whisper-quiet ultrasonic motor"]},
+
+  {id:3, name:"Astronaut Galaxy Projector", mrp:2999, price:999, tagline:"Turn your ceiling into a starfield",
+   desc:"An astronaut-shaped projector that fills your room with rotating nebula and star patterns, with built-in white noise for a calming bedtime routine.",
+   features:["360 degree rotating galaxy projection","Bluetooth speaker plus white noise","Remote and voice control"]},
+
+  {id:4, name:"Bluetooth Vintage Speaker", mrp:3999, price:1499, tagline:"Retro looks, modern sound",
+   desc:"A wood-finished, dial-and-knob speaker that pairs classic radio styling with crisp Bluetooth audio and a surprisingly punchy bass.",
+   features:["Bluetooth 5.0, 10m range","FM radio plus AUX input","Rechargeable, 10 hr playback"]},
+
+  {id:5, name:"Digital Desk Clock", mrp:1499, price:699, tagline:"One glance, all the info",
+   desc:"A compact LED desk clock showing time, date and room temperature, with adjustable brightness so it never disturbs your sleep.",
+   features:["Time, date and temperature display","Dimmable LED, snooze alarm","USB or battery powered"]},
+
+  {id:6, name:"3-in-1 Wireless Charging Station", mrp:7999, price:1599, tagline:"One pad, three devices",
+   desc:"Charge your phone, earbuds and watch at once on a single sleek charging stand, keeping your desk free of tangled cables.",
+   features:["Charges phone, earbuds and watch","Fast wireless charging, 15W","Foldable, travel-friendly"]},
+
+  {id:7, name:"Anti-Gravity Drop Humidifier", mrp:3599, price:1599, tagline:"A drop that never falls",
+   desc:"An optical-illusion humidifier where a single water drop appears to hang frozen mid-air, releasing a fine, soothing mist below it.",
+   features:["Illusion 'floating drop' mist effect","7-colour ambient light","Auto shut-off when water is low"]},
+
+  {id:8, name:"RGB Desk Mat", mrp:1999, price:1299, tagline:"Light up your setup",
+   desc:"An extended desk mat with stitched edges and built-in RGB lighting that syncs your whole desk to your gaming mood.",
+   features:["Full-desk size, smooth surface","Multiple RGB lighting modes","Non-slip rubber base"]},
+
+  {id:9, name:"LED Monitor Light Bar", mrp:4599, price:1799, tagline:"Light your desk, not your eyes",
+   desc:"Clips onto the top of your monitor to softly light your workspace from above, cutting glare and screen-light eye strain during long sessions.",
+   features:["Asymmetric light, zero screen glare","Touch dimming and colour temperature","USB powered, no extra cables"]},
+
+  {id:10, name:"Transparent Wireless Mouse", mrp:1899, price:899, tagline:"See-through style, silent clicks",
+   desc:"A see-through wireless mouse with a silent-click design and precise tracking, built for long work sessions with a unique aesthetic look.",
+   features:["2.4GHz wireless, plug-and-play","Silent click buttons, transparent shell","Long battery life"]},
+
+  {id:11, name:"RGB Desktop Light Bar", mrp:1899, price:1199, tagline:"Ambient glow for your whole desk",
+   desc:"A freestanding RGB light bar that sits behind your monitor, syncing colour and rhythm to music or games for instant desk atmosphere.",
+   features:["Music-sync RGB modes","App and remote control","Compact freestanding design"]},
+
+  {id:12, name:"Desktop Fan", mrp:3799, price:699, tagline:"Personal cooling, zero noise",
+   desc:"A compact USB desk fan with adjustable tilt and multiple speed settings, quiet enough to run all day beside your laptop.",
+   features:["3-speed adjustable airflow","Tiltable head, USB powered","Compact, lightweight design"]},
+
+  {id:13, name:"Tablet Stand", mrp:1599, price:599, tagline:"Sturdy support for any screen",
+   desc:"A foldable stainless-steel stand that holds your tablet or phone securely at the perfect angle for reading, video calls or recipes.",
+   features:["Adjustable multi-angle design","Stainless steel, foldable and portable","Fits tablets and phones"]},
+
+  {id:14, name:"Portable Neck Fan", mrp:1699, price:749, tagline:"Hands-free cooling wherever you go",
+   desc:"A lightweight, hands-free fan that wraps around your neck and blows cool air from both sides — perfect for commutes, workouts, travel or beating the heat outdoors.",
+   features:["3 adjustable wind speeds","Bladeless design, safe for hair and clothing","USB-C rechargeable with hours of cooling per charge"]},
+
+  {id:15, name:"Adjustable Desk Lamp", mrp:1499, price:799, tagline:"Light that adapts to your work",
+   desc:"A foldable LED desk lamp with adjustable brightness and colour temperature, designed to reduce eye strain during study or work.",
+   features:["Stepless brightness and colour temp","Foldable arm, touch control","USB powered"]},
+
+  {id:16, name:"3D Sunset Lamp", mrp:1799, price:699, tagline:"Golden hour, on demand",
+   desc:"A projector lamp that casts a warm, rainbow-edged sunset glow across your room or wall — popular for photos, study sessions and unwinding.",
+   features:["180 degree rotatable lamp head","Warm sunset-effect projection","USB powered, plug-and-play"]},
+
+  {id:17, name:"Portable Juicer Blender", mrp:2999, price:1299, tagline:"Fresh juice, anywhere",
+   desc:"A USB-rechargeable mini blender that crushes fruit into smooth juice in seconds, small enough to carry to the gym, office or while travelling.",
+   features:["6-blade stainless steel blender","USB-C rechargeable","Compact, easy to clean"]}
+];
+
+/* =====================================================================
+   STATE
+   ===================================================================== */
+let cart = []; // { id, qty }
+
+function findProduct(id){ return PRODUCTS.find(p => p.id === id); }
+function imgPath(id, n){ return `p${id}-${n}.png`; }
+function formatPrice(n){ return '₹' + Number(n).toLocaleString('en-IN'); }
+function discountPct(p){ return p.mrp && p.mrp > p.price ? Math.round((1 - p.price / p.mrp) * 100) : 0; }
+function pad(n){ return String(n).padStart(2,'0'); }
+
+/* =====================================================================
+   ROUTING
+   ===================================================================== */
+function navigate(hash){
+  window.location.hash = hash;
+  window.scrollTo({top:0, behavior:'instant'});
+}
+
+function router(){
+  const hash = window.location.hash || '#/';
+  const match = hash.match(/^#\/product\/(\d+)/);
+  if(match){
+    renderProduct(Number(match[1]));
+  } else {
+    renderHome();
+  }
+}
+window.addEventListener('hashchange', router);
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('year').textContent = new Date().getFullYear();
+  if(!window.location.hash) window.location.hash = '#/';
+  router();
+  updateCartUI();
+});
+
+/* =====================================================================
+   RENDER: HOME
+   ===================================================================== */
+function renderHome(){
+  document.title = 'OS TECH HUB — Smart Tech, Simple Ordering';
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <section class="hero">
+      <div class="eyebrow">/ welcome</div>
+      <h1>OS TECH HUB<span class="cursor" style="color:var(--amber)">_</span></h1>
+      <p class="tagline">Smart gadgets for your desk, room and pocket — browse the catalog and order directly on WhatsApp or Instagram.</p>
+      <button class="scroll-cue" onclick="document.getElementById('catalog').scrollIntoView({behavior:'smooth'})" aria-label="Scroll to products">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+    </section>
+    <div id="catalog" class="catalog">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">/ catalog</div>
+          <h2>All Products</h2>
+        </div>
+        <span class="mono" style="color:var(--text-muted);font-size:.85rem;">${PRODUCTS.length} items</span>
+      </div>
+      <div class="grid">
+        ${PRODUCTS.map(p => `
+          <button class="card" onclick="navigate('#/product/${p.id}')">
+            <div class="card-img-wrap">
+              <span class="card-index">/${pad(p.id)}</span>
+              ${discountPct(p) > 0 ? `<span class="card-discount">${discountPct(p)}% OFF</span>` : ''}
+              <img src="${imgPath(p.id,1)}" alt="${p.name}" loading="lazy">
+            </div>
+            <div class="card-body">
+              <div class="card-name">${p.name}</div>
+              <div class="card-price-row">
+                <span class="card-price">${formatPrice(p.price)}</span>
+                ${p.mrp ? `<span class="card-mrp">${formatPrice(p.mrp)}</span>` : ''}
+              </div>
+            </div>
+          </button>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+/* =====================================================================
+   RENDER: PRODUCT DETAIL
+   ===================================================================== */
+function renderProduct(id){
+  const p = findProduct(id);
+  const app = document.getElementById('app');
+  if(!p){
+    app.innerHTML = `<div class="detail"><p>Product not found.</p><button class="back-link" onclick="navigate('#/')">&larr; All products</button></div>`;
+    return;
+  }
+  document.title = `${p.name} — OS TECH HUB`;
+
+  app.innerHTML = `
+    <div class="detail">
+      <button class="back-link" onclick="navigate('#/')">&larr; All products</button>
+      <div class="detail-wrap">
+        <div>
+          <div class="main-img-wrap"><img id="mainImg" src="${imgPath(p.id,1)}" alt="${p.name} — photo 1"></div>
+          <div class="thumbs">
+            ${[1,2,3].map(n => `
+              <button class="thumb ${n===1?'active':''}" data-n="${n}" onclick="setMainImage(${p.id}, ${n}, this)">
+                <img src="${imgPath(p.id,n)}" alt="${p.name} — thumbnail ${n}">
+              </button>
+            `).join('')}
+          </div>
+        </div>
+        <div>
+          ${p.price === 0 ? `<div class="placeholder-warning">${p.desc}</div>` : ''}
+          <div class="detail-index">/${pad(p.id)}</div>
+          <h1>${p.name}</h1>
+          <div class="detail-tagline">${p.tagline}</div>
+          <div class="price-row">
+            <span class="detail-price">${formatPrice(p.price)}</span>
+            ${p.mrp ? `<span class="detail-mrp">${formatPrice(p.mrp)}</span>` : ''}
+            ${discountPct(p) > 0 ? `<span class="discount-pill">${discountPct(p)}% OFF</span>` : ''}
+          </div>
+          ${p.price !== 0 ? `<p class="detail-desc">${p.desc}</p>` : ''}
+          <ul class="features">
+            ${p.features.map(f => `<li>${f}</li>`).join('')}
+          </ul>
+          <div class="divider"></div>
+          <div class="qty-row">
+            <span class="qty-label">Quantity</span>
+            <div class="stepper">
+              <button onclick="changeDetailQty(-1)" aria-label="Decrease quantity">−</button>
+              <span id="detailQty">1</span>
+              <button onclick="changeDetailQty(1)" aria-label="Increase quantity">+</button>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="addToCart(${p.id})">Add to Cart</button>
+          <button class="btn btn-outline" onclick="buyNow(${p.id})">Buy Now</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function setMainImage(id, n, el){
+  document.getElementById('mainImg').src = imgPath(id, n);
+  document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+let detailQty = 1;
+function changeDetailQty(delta){
+  detailQty = Math.max(1, Math.min(20, detailQty + delta));
+  document.getElementById('detailQty').textContent = detailQty;
+}
+
+/* =====================================================================
+   CART LOGIC
+   ===================================================================== */
+function addToCart(id){
+  const existing = cart.find(item => item.id === id);
+  if(existing){ existing.qty += detailQty; }
+  else { cart.push({id, qty: detailQty}); }
+  detailQty = 1;
+  updateCartUI();
+  openCart();
+  showToast('Added to cart');
+}
+
+function buyNow(id){
+  cart = [{id, qty: detailQty}];
+  detailQty = 1;
+  updateCartUI();
+  openCart();
+  showToast('Ready to order — confirm below');
+}
+
+function changeCartQty(id, delta){
+  const item = cart.find(i => i.id === id);
+  if(!item) return;
+  item.qty = Math.max(1, Math.min(20, item.qty + delta));
+  updateCartUI();
+}
+
+function removeFromCart(id){
+  cart = cart.filter(i => i.id !== id);
+  updateCartUI();
+}
+
+function cartTotal(){
+  return cart.reduce((sum, item) => {
+    const p = findProduct(item.id);
+    return sum + (p ? p.price * item.qty : 0);
+  }, 0);
+}
+
+function cartSavings(){
+  return cart.reduce((sum, item) => {
+    const p = findProduct(item.id);
+    return sum + (p && p.mrp ? (p.mrp - p.price) * item.qty : 0);
+  }, 0);
+}
+
+function cartCount(){
+  return cart.reduce((sum, item) => sum + item.qty, 0);
+}
+
+function updateCartUI(){
+  const badge = document.getElementById('cartBadge');
+  const count = cartCount();
+  badge.textContent = count;
+  badge.style.display = count > 0 ? 'flex' : 'none';
+
+  const body = document.getElementById('cartBody');
+  if(cart.length === 0){
+    body.innerHTML = `<div class="cart-empty">Your cart is empty.<br>Add a product to get started.</div>`;
+  } else {
+    body.innerHTML = cart.map(item => {
+      const p = findProduct(item.id);
+      if(!p) return '';
+      return `
+        <div class="cart-item">
+          <img src="${imgPath(p.id,1)}" alt="${p.name}">
+          <div class="cart-item-info">
+            <div class="cart-item-name">${p.name}</div>
+            <div class="cart-item-price">${formatPrice(p.price)} x ${item.qty}</div>
+          </div>
+          <div class="mini-stepper">
+            <button onclick="changeCartQty(${p.id}, -1)" aria-label="Decrease quantity">−</button>
+            <span>${item.qty}</span>
+            <button onclick="changeCartQty(${p.id}, 1)" aria-label="Increase quantity">+</button>
+          </div>
+          <button class="cart-remove" onclick="removeFromCart(${p.id})" aria-label="Remove item">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+          </button>
+        </div>
+      `;
+    }).join('');
+  }
+  document.getElementById('cartTotal').textContent = formatPrice(cartTotal());
+  const savings = cartSavings();
+  const savingsEl = document.getElementById('cartSavings');
+  if(savingsEl){
+    savingsEl.textContent = savings > 0 ? `You saved ${formatPrice(savings)}` : '';
+    savingsEl.style.display = savings > 0 ? 'block' : 'none';
+  }
+}
+
+function openCart(){
+  document.getElementById('cartPanel').classList.add('open');
+  document.getElementById('cartOverlay').classList.add('open');
+}
+function closeCart(){
+  document.getElementById('cartPanel').classList.remove('open');
+  document.getElementById('cartOverlay').classList.remove('open');
+}
+function toggleCart(){
+  const panel = document.getElementById('cartPanel');
+  panel.classList.contains('open') ? closeCart() : openCart();
+}
+
+/* =====================================================================
+   CHECKOUT
+   ===================================================================== */
+function buildOrderText(){
+  if(cart.length === 0) return null;
+  const lines = ['Hello OS TECH HUB! I would like to order:', ''];
+  cart.forEach(item => {
+    const p = findProduct(item.id);
+    if(!p) return;
+    lines.push(`- ${p.name} x${item.qty} — ${formatPrice(p.price * item.qty)}`);
+  });
+  lines.push('', `Total: ${formatPrice(cartTotal())}`, '', 'Please confirm availability and delivery details.');
+  return lines.join('\n');
+}
+
+function checkoutWhatsapp(){
+  const text = buildOrderText();
+  if(!text){ showToast('Your cart is empty'); return; }
+  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+  window.open(url, '_blank');
+}
+
+function checkoutInstagram(){
+  const text = buildOrderText();
+  if(!text){ showToast('Your cart is empty'); return; }
+  copyToClipboard(text);
+  window.open(`https://ig.me/m/${INSTAGRAM_USERNAME}`, '_blank');
+  showToast('Order copied — paste it in the Instagram chat that just opened');
+}
+
+function copyToClipboard(text){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+function fallbackCopy(text){
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try{ document.execCommand('copy'); } catch(e){}
+  document.body.removeChild(ta);
+}
+
+/* =====================================================================
+   TOAST
+   ===================================================================== */
+let toastTimer;
+function showToast(msg){
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+}
+</script>
+</body>
+</html>
